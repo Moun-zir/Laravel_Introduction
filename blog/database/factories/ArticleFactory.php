@@ -25,16 +25,14 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
         $imageFaker = new ImageFaker(new Picsum());
-        
+
         return [
-         
             'title' => fake()->sentence(15), // on veut 15 mots
             'body' => fake()->paragraph(50), // on veut 50 phrases
             'user_id' => function () {
                 return User::inRandomOrder()->first()->id;
             },
-            'image' => $imageFaker->image(public_path("images"))
-           
+            'image' => $imageFaker->image(public_path("images")),
         ];
     }
 }
