@@ -47,4 +47,16 @@ class User extends Authenticatable
         ];
     }
 
+
+    //Ajout de méthodes
+    //Un utilisateur écrit plusieurs articles
+    public function articles(){
+        return $this->hasMany(Article::class);
+    }
+
+    //Un utilisateur écrit plusieurs commentaires
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
 }
