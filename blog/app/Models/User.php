@@ -64,4 +64,10 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
+    //Ajout
+    public function isAdmin()
+    {
+        return $this->admin;
+    }
+
 }

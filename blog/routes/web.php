@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SessionsController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\Admin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PagesController::class, 'index']);
@@ -13,8 +14,8 @@ Route::get('/about-us', [PagesController::class, 'about']);
 Route::get('/articles', [ArticlesController::class, 'index']);
 Route::get('/show-article/{id}', [ArticlesController::class, 'show']);
 
-Route::get('/articles/create', [ArticlesController::class, 'create'])->middleware('auth');
-Route::post('/articles/create', [ArticlesController::class, 'store'])->middleware('auth');
+Route::get('/articles/create', [ArticlesController::class, 'create'])->middleware("admin");
+Route::post('/articles/create', [ArticlesController::class, 'store'])->middleware("admin");
 
 Route::get('/article/{article}/edit', [ArticlesController::class, 'edit'])->middleware('auth');
 Route::patch('/article/{article}/edit', [ArticlesController::class, 'update'])->middleware('auth');
