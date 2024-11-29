@@ -12,29 +12,30 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // Création de la clé primaire 'id' auto-incrémentée
-            $table->string('name');// Champ 'name', type string, pour le nom de l'utilisateur
-            $table->string('email')->unique();// Champ 'email', type string, avec contrainte d'unicité
-            $table->timestamp('email_verified_at')->nullable();// Champ 'email_verified_at', type timestamp, pour la vérification de l'email, nullable
-            $table->string('password');// Champ 'password', type string, pour stocker le mot de passe
-            $table->rememberToken();// Champ 'remember_token', utilisé pour le système de "remember me" lors de la connexion
-            $table->timestamps();// Champs 'created_at' et 'updated_at', de type timestamp, qui sont gérés automatiquement par Eloquent
-            $table->boolean('admin')->default(false);
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->foreignId('current_team_id')->nullable();
+            $table->string('profile_photo_path', 2048)->nullable();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary(); // 'email' comme clé primaire
-            $table->string('token'); // Champ 'token' pour stocker le token de réinitialisation
-            $table->timestamp('created_at')->nullable(); // Champ 'created_at' de type timestamp, nullable, pour indiquer la date de création du token
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary(); // Champ 'id' comme clé primaire
-            $table->foreignId('user_id')->nullable()->index(); // Champ 'user_id' qui est une clé étrangère vers la table 'users'
-            $table->string('ip_address', 45)->nullable(); // Champ 'ip_address' pour stocker l'adresse IP de l'utilisateur
-            $table->text('user_agent')->nullable(); // Champ 'user_agent' pour stocker les informations sur le navigateur de l'utilisateur
-            $table->longText('payload'); // Champ 'payload' pour stocker des données supplémentaires relatives à la session
-            $table->integer('last_activity')->index(); // Champ 'last_activity' pour stocker le dernier moment d'activité de la session
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
     }
 

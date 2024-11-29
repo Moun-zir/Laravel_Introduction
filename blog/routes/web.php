@@ -1,32 +1,39 @@
 <?php
 
-use App\Http\Controllers\ArticlesController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\SessionsController;
-use App\Http\Controllers\PagesController;
-use App\Http\Controllers\UserController;
-use App\Http\Middleware\Admin;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
-Route::get('/', [PagesController::class, 'index']);
-Route::get('/contact-us', [PagesController::class, 'contact']);
-Route::get('/about-us', [PagesController::class, 'about']);
-Route::get('/articles', [ArticlesController::class, 'index']);
-Route::get('/show-article/{id}', [ArticlesController::class, 'show']);
+// Page d'accueil
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
 
-Route::get('/articles/create', [ArticlesController::class, 'create'])->middleware("admin");
-Route::post('/articles/create', [ArticlesController::class, 'store'])->middleware("admin");
+// Routes protégées par middleware d'authentification
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
-Route::get('/article/{article}/edit', [ArticlesController::class, 'edit'])->middleware('auth');
-Route::patch('/article/{article}/edit', [ArticlesController::class, 'update'])->middleware('auth');
-Route::delete('article/{article}/delete', [ArticlesController::class, 'delete'])->middleware('auth');
+    // Articles
+    Route::get('/articles', function () {
+        return Inertia::render('Articles/Index'); // Correspond à une vue Vue.js dans js/Pages/Articles/Index.vue
+    })->name('articles');
 
-// Auth
-Route::get('/register', [RegisterController::class, 'index'])->name('register')->middleware('guest');
-Route::post('/register', [RegisterController::class, 'create'])->middleware('guest');
-Route::get('/login', [SessionsController::class, 'index'])->name('login')->middleware('guest');
-Route::post('/login', [SessionsController::class, 'authenticate'])->middleware('guest');
-Route::post('/logout', [SessionsController::class, 'logout'])->name('logout')->middleware('auth');
+    Route::get('/articles/create', function () {
+        return Inertia::render('Articles/Create'); // Correspond à js/Pages/Articles/Create.vue
+    })->name('articles.create');
 
-// profile
-Route::get('/profile', [UserController::class, 'index'])->name('profile')->middleware('auth');
+    Route::get('/articles/{id}', function ($id) {
+        return Inertia::render('Articles/Show', ['id' => $id]); // Correspond à js/Pages/Articles/Show.vue
+    })->name('articles.show');
+});
