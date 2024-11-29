@@ -53,5 +53,7 @@
             @include('messages.allMessages')
         </div>
     </div>
+    <script src="{{ asset('/css/app.css') }}"></script>
+    <script src="{{ asset('/js/app.js') }}"></script>
 </body>
 </html>
